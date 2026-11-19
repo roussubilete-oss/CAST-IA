@@ -1,0 +1,9 @@
+{
+  "name": "CAST-IA Asistente Educativa",
+  "short_name": "CAST-IA",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0B090C",
+  "theme_color": "#721436",
+  "orientation": "portrait"
+}

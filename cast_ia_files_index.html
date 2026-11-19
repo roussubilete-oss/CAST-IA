@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0B090C" />
+  <title>CAST-IA | Asistente Educativa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=7ijAurPF_W51DnYBUBt6WJ28tRMDAWXgwvSxGthucObhR7hxjGFs5E2mMQNbbnUD6Gk-nZX-C41kTVi6bTlfco5Kh0KvUNz9Ep7oRMf6gUYOSGPi8cCJFOZeiro-3e7SPiV8b_b359V1BGciJ4JSdXWK2oY7Y0BM2-hQxSzw7DvW7e1tjjxkk0enflwWwUeWdR1znXvu09A2C2rS_b6OcV1-fQGUh9JNxHrrI_bwxppFIfDD2GaX0gxgxesNQeYzggJgipxpjT7X6ldOakOaUBC-1sVlgF8H207Ko-bNj30rISd9NH_MYAfxZNS0JbBaQ92_DH5VsKALENddT7dIHofs6tgtufvaZBVGbkrAbgc" charset="UTF-8"></script><style>
+    :root {
+      --bg-black: #0B090C;
+      --surface-dark: #161118;
+      --surface-card: #1F1622;
+      --wine-dark: #4A0E24;
+      --wine-main: #721436;
+      --wine-light: #961C47;
+      --pink-accent: #FF6B9E;
+      --pink-soft: #FF9EC0;
+      --gold-main: #E5B94C;
+      --gold-light: #FFE082;
+      --text-white: #F9F5F7;
+      --text-muted: #B6A4AE;
+      --border-subtle: rgba(229, 185, 76, 0.22);
+      --border-pink: rgba(255, 107, 158, 0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      background: radial-gradient(circle at top, #280B18 0%, #070508 100%);
+      color: var(--text-white);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app-frame {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      max-height: 880px;
+      background: var(--bg-black);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(229, 185, 76, 0.25);
+    }
+
+    @media (min-width: 480px) {
+      .app-frame { height: 92vh; border-radius: 34px; }
+    }
+
+    .app-header {
+      padding: 14px 18px;
+      background: linear-gradient(180deg, rgba(74, 14, 36, 0.65) 0%, rgba(11, 9, 12, 0.95) 100%);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .brand-row { display: flex; align-items: center; gap: 10px; }
+    .brand-title { font-size: 1.2rem; font-weight: 800; letter-spacing: 0.6px; background: linear-gradient(90deg, var(--gold-light), var(--gold-main), var(--pink-accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .status-pill { font-size: 0.72rem; padding: 4px 10px; border-radius: 999px; background: rgba(114, 20, 54, 0.55); border: 1px solid var(--border-pink); color: var(--pink-soft); display: flex; align-items: center; gap: 5px; }
+    .dot-online { width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; box-shadow: 0 0 8px #4ADE80; }
+
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 16px 88px;
+      scroll-behavior: smooth;
+    }
+    .app-content::-webkit-scrollbar { width: 4px; }
+    .app-content::-webkit-scrollbar-thumb { background: var(--wine-main); border-radius: 4px; }
+
+    .screen { display: none; animation: fadeIn 0.25s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-card {
+      background: linear-gradient(135deg, #2B0B19 0%, #150F17 65%, #241911 100%);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .mascot-wrap { width: 108px; height: 108px; margin: 0 auto 10px; filter: drop-shadow(0 8px 18px rgba(229, 185, 76, 0.25)); }
+    .hero-title { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; }
+    .hero-sub { font-size: 0.88rem; color: var(--text-muted); line-height: 1.45; margin-bottom: 16px; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--wine-main) 0%, #9E1B4B 100%);
+      color: #fff;
+      border: 1px solid var(--gold-main);
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(114, 20, 54, 0.45);
+      transition: transform 0.15s ease;
+    }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #D4A237 0%, #F2CF66 100%);
+      color: #160D12;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    .section-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-main); font-weight: 700; margin: 14px 0 10px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .feature-card {
+      background: var(--surface-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 18px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .feature-card:hover { border-color: var(--pink-accent); transform: translateY(-2px); }
+    .feature-icon {
+      width: 38px; height: 38px; border-radius: 12px;
+      background: rgba(114, 20, 54, 0.45); border: 1px solid var(--border-pink);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; margin-bottom: 10px; color: var(--gold-light);
+    }
+    .feature-card h4 { font-size: 0.95rem; margin-bottom: 4px; color: var(--text-white); }
+    .feature-card p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.35; }
+
+    .chat-box { display: flex; flex-direction: column; gap: 12px; min-height: 55vh; }
+    .msg { max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 0.9rem; line-height: 1.45; white-space: pre-line; }
+    .msg.ai {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .msg.user {
+      background: linear-gradient(135deg, var(--wine-main), var(--wine-light));
+      border: 1px solid var(--border-pink);
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg-sender { font-size: 0.72rem; font-weight: 700; color: var(--gold-main); margin-bottom: 4px; display: block; }
+
+    .chat-input-bar {
+      display: flex; gap: 8px; margin-top: 14px; background: var(--surface-dark);
+      padding: 8px; border-radius: 16px; border: 1px solid var(--border-subtle);
+    }
+    .chat-input-bar input {
+      flex: 1; background: transparent; border: none; color: var(--text-white);
+      font-size: 0.9rem; padding: 6px 8px; outline: none;
+    }
+
+    .card-panel {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    select, input[type="text"], input[type="date"], textarea {
+      width: 100%; background: var(--surface-dark); border: 1px solid rgba(229, 185, 76, 0.25);
+      color: var(--text-white); padding: 10px 12px; border-radius: 12px; font-size: 0.88rem;
+      margin-bottom: 10px; outline: none;
+    }
+    textarea { min-height: 82px; resize: vertical; }
+
+    .result-box {
+      background: #130E15; border-left: 3px solid var(--gold-main);
+      padding: 13px; border-radius: 10px; font-size: 0.88rem; line-height: 1.5;
+      margin-top: 12px; white-space: pre-line;
+    }
+
+    .pill-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .pill-tab {
+      flex: 1; padding: 8px; border-radius: 12px; border: 1px solid var(--border-subtle);
+      background: var(--surface-dark); color: var(--text-muted); font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    }
+    .pill-tab.active { background: var(--wine-main); color: #fff; border-color: var(--pink-accent); }
+
+    .task-item {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-dark); padding: 11px 13px; border-radius: 12px;
+      margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.05);
+    }
+    .task-item.done span { text-decoration: line-through; color: var(--text-muted); }
+    .progress-track { width: 100%; height: 10px; background: #2A1D2E; border-radius: 999px; overflow: hidden; margin: 8px 0; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--pink-accent), var(--gold-main)); transition: width 0.3s ease; }
+
+    .bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(15, 11, 17, 0.96);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border-subtle);
+      display: flex; justify-content: space-around;
+      padding: 8px 4px 12px;
+      z-index: 20;
+    }
+    .nav-btn {
+      background: none; border: none; color: var(--text-muted);
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      font-size: 0.7rem; font-weight: 600; cursor: pointer; padding: 4px 8px;
+      transition: color 0.2s;
+    }
+    .nav-btn.active { color: var(--gold-main); }
+    .nav-btn.active .nav-ico { background: rgba(114, 20, 54, 0.6); color: var(--pink-accent); border: 1px solid var(--border-pink); }
+    .nav-ico { width: 32px; height: 26px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="app-frame">
+    <header class="app-header">
+      <div class="brand-row">
+        <svg width="30" height="30" viewBox="0 0 120 120">
+          <rect x="24" y="34" width="72" height="60" rx="22" fill="#141116" stroke="#E5B94C" stroke-width="4"/>
+          <path d="M44 26 L60 36 L76 26 L72 42 L48 42 Z" fill="#FF6B9E"/>
+          <circle cx="60" cy="34" r="5" fill="#E5B94C"/>
+          <circle cx="46" cy="62" r="8" fill="#FFFFFF"/>
+          <circle cx="74" cy="62" r="8" fill="#FFFFFF"/>
+          <path d="M48 78 Q60 86 72 78" stroke="#E5B94C" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-title">CAST-IA</span>
+      </div>
+      <div class="status-pill"><span class="dot-online"></span> Tutora Activa</div>
+    </header>
+
+    <main class="app-content">
+      <section id="scr-inicio" class="screen active">
+        <div class="hero-card">
+          <div class="mascot-wrap">
+            <svg viewBox="0 0 160 160" width="100%" height="100%">
+              <defs>
+                <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#FFE082"/>
+                  <stop offset="100%" stop-color="#D4A237"/>
+                </linearGradient>
+              </defs>
+              <line x1="80" y1="14" x2="80" y2="34" stroke="url(#goldGrad)" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="80" cy="12" r="6" fill="#FF6B9E"/>
+              <rect x="18" y="64" width="12" height="32" rx="6" fill="#721436" stroke="url(#goldGrad)" stroke-width="2.5"/>
+              <rect x="130" y="64" width="12" height="32" rx="6" fill="#721436" stroke="url(#goldGrad)" stroke-width="2.5"/>
+              <rect x="30" y="36" width="100" height="86" rx="30" fill="#120F14" stroke="url(#goldGrad)" stroke-width="4"/>
+              <path d="M36 58 H48 L54 50" stroke="url(#goldGrad)" stroke-width="2" fill="none" opacity="0.8"/>
+              <path d="M124 58 H112 L106 50" stroke="url(#goldGrad)" stroke-width="2" fill="none" opacity="0.8"/>
+              <path d="M38 104 H54 L60 112" stroke="url(#goldGrad)" stroke-width="2" fill="none" opacity="0.7"/>
+              <path d="M122 104 H106 L100 112" stroke="url(#goldGrad)" stroke-width="2" fill="none" opacity="0.7"/>
+              <rect x="44" y="58" width="72" height="44" rx="18" fill="#1E1722" stroke="#721436" stroke-width="2"/>
+              <ellipse cx="63" cy="78" rx="9" ry="11" fill="#FFFFFF"/>
+              <ellipse cx="97" cy="78" rx="9" ry="11" fill="#FFFFFF"/>
+              <circle cx="65" cy="75" r="3" fill="#FF6B9E"/>
+              <circle cx="99" cy="75" r="3" fill="#FF6B9E"/>
+              <path d="M70 92 Q80 99 90 92" stroke="#FFE082" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <path d="M54 32 C42 22, 42 46, 68 38 C56 35, 56 35, 54 32 Z" fill="#FF6B9E" stroke="#FFE082" stroke-width="1.5"/>
+              <path d="M106 32 C118 22, 118 46, 92 38 C104 35, 104 35, 106 32 Z" fill="#FF6B9E" stroke="#FFE082" stroke-width="1.5"/>
+              <circle cx="80" cy="37" r="7" fill="#FF4785" stroke="#FFE082" stroke-width="2"/>
+            </svg>
+          </div>
+          <h1 class="hero-title">¡Hola! Soy CAST-IA</h1>
+          <p class="hero-sub">Tu compañera inteligente de estudio. No solo te doy respuestas: te explico paso a paso para que domines cada curso.</p>
+          <button class="btn-primary" onclick="goScreen('scr-chat')">💬 Entrar al Chat Inteligente</button>
+        </div>
+
+        <div class="section-label">Herramientas Educativas</div>
+        <div class="grid-2">
+          <div class="feature-card" onclick="goScreen('scr-tareas')">
+            <div class="feature-icon">📐</div>
+            <h4>Ayuda con Tareas</h4>
+            <p>Matemática paso a paso, ciencias, historia y comunicación.</p>
+          </div>
+          <div class="feature-card" onclick="goScreen('scr-estudio')">
+            <div class="feature-icon">🧠</div>
+            <h4>Zona de Estudio</h4>
+            <p>Resúmenes claros, cuestionarios y práctica de exámenes.</p>
+          </div>
+          <div class="feature-card" onclick="goScreen('scr-agenda')">
+            <div class="feature-icon">📅</div>
+            <h4>Organizador</h4>
+            <p>Anota tus entregas, horarios y marca tus logros diarios.</p>
+          </div>
+          <div class="feature-card" onclick="goScreen('scr-progreso')">
+            <div class="feature-icon">📊</div>
+            <h4>Mi Seguimiento</h4>
+            <p>Visualiza tu avance y qué temas reforzar hoy.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="scr-chat" class="screen">
+        <div class="section-label">Conversación con CAST-IA</div>
+        <div id="chat-history" class="chat-box"></div>
+        <div class="chat-input-bar">
+          <input id="chat-input" type="text" placeholder="Pregúntame sobre cualquier tema..." onkeydown="if(event.key==='Enter') sendChat()" />
+          <button class="btn-gold" onclick="sendChat()">Enviar</button>
+        </div>
+      </section>
+
+      <section id="scr-tareas" class="screen">
+        <div class="section-label">Tutoría Paso a Paso</div>
+        <div class="card-panel">
+          <label style="font-size:0.8rem; color:var(--gold-light); display:block; margin-bottom:4px;">Selecciona tu curso:</label>
+          <select id="hw-subject">
+            <option value="Matemática">Matemática (Álgebra, Geometría, Aritmética)</option>
+            <option value="Ciencias">Ciencia y Tecnología (Biología, Física, Química)</option>
+            <option value="Comunicación">Comunicación y Literatura</option>
+            <option value="Historia">Historia, Geografía y Economía</option>
+            <option value="Inglés">Inglés</option>
+          </select>
+          <textarea id="hw-prompt" placeholder="Escribe tu ejercicio o duda. Ejemplo: Resuelve 2x + 6 = 18 o explica la fotosíntesis..."></textarea>
+          <button class="btn-primary" onclick="solveHomework()">✨ Explicar Paso a Paso</button>
+          <div id="hw-output" class="result-box" style="display:none;"></div>
+        </div>
+      </section>
+
+      <section id="scr-estudio" class="screen">
+        <div class="section-label">Zona de Estudio Activo</div>
+        <div class="pill-tabs">
+          <button class="pill-tab active" onclick="switchStudyTab('resumen', this)">📝 Resumen</button>
+          <button class="pill-tab" onclick="switchStudyTab('quiz', this)">🎯 Cuestionario</button>
+        </div>
+
+        <div id="study-resumen" class="card-panel">
+          <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:10px;">Pega un texto largo o escribe un tema difícil para sintetizarlo con ejemplos.</p>
+          <textarea id="summary-input" placeholder="Pega aquí tus apuntes o escribe el tema (ej. La célula eucariota)..."></textarea>
+          <button class="btn-primary" onclick="generateSummary()">Generar Resumen Didáctico</button>
+          <div id="summary-output" class="result-box" style="display:none;"></div>
+        </div>
+
+        <div id="study-quiz" class="card-panel" style="display:none;">
+          <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:10px;">Pon a prueba lo que sabes con una pregunta guiada:</p>
+          <div id="quiz-container"></div>
+          <button class="btn-gold" style="margin-top:10px; width:100%;" onclick="nextQuizQuestion()">Siguiente Pregunta</button>
+        </div>
+      </section>
+
+      <section id="scr-agenda" class="screen">
+        <div class="section-label">Organizador Académico</div>
+        <div class="card-panel">
+          <input type="text" id="task-title" placeholder="Nueva actividad (ej. Repasar ecuaciones)" />
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="task-course" placeholder="Curso" style="flex:1;" />
+            <input type="date" id="task-date" style="flex:1;" />
+          </div>
+          <button class="btn-primary" onclick="addTask()">+ Añadir Actividad</button>
+        </div>
+        <div id="task-list"></div>
+      </section>
+
+      <section id="scr-progreso" class="screen">
+        <div class="section-label">Progreso de Aprendizaje</div>
+        <div class="card-panel">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Meta Semanal Completada</strong>
+            <span id="prog-percent" style="color:var(--gold-main); font-weight:800;">0%</span>
+          </div>
+          <div class="progress-track"><div id="prog-bar" class="progress-fill" style="width:0%"></div></div>
+          <p id="prog-stats" style="font-size:0.82rem; color:var(--text-muted);"></p>
+        </div>
+
+        <div class="card-panel">
+          <h4 style="color:var(--pink-soft); margin-bottom:8px;">💡 Recomendación de CAST-IA</h4>
+          <p id="prog-advice" style="font-size:0.86rem; line-height:1.45; color:var(--text-white);"></p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-target="scr-inicio" onclick="goScreen('scr-inicio', this)">
+        <span class="nav-ico">🏠</span><span>Inicio</span>
+      </button>
+      <button class="nav-btn" data-target="scr-chat" onclick="goScreen('scr-chat', this)">
+        <span class="nav-ico">🤖</span><span>Chat IA</span>
+      </button>
+      <button class="nav-btn" data-target="scr-tareas" onclick="goScreen('scr-tareas', this)">
+        <span class="nav-ico">📚</span><span>Tareas</span>
+      </button>
+      <button class="nav-btn" data-target="scr-estudio" onclick="goScreen('scr-estudio', this)">
+        <span class="nav-ico">✨</span><span>Estudio</span>
+      </button>
+      <button class="nav-btn" data-target="scr-agenda" onclick="goScreen('scr-agenda', this)">
+        <span class="nav-ico">📅</span><span>Agenda</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    class CastIAService {
+      constructor() {
+        this.proxyEndpoint = "/api/cast-ia/tutor";
+        this.useRemoteServer = false;
+      }
+
+      async askTutor({ mode, subject, prompt }) {
+        if (this.useRemoteServer) {
+          const response = await fetch(this.proxyEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mode, subject, prompt })
+          });
+          if (!response.ok) throw new Error("Error de conexión con servidor seguro");
+          const data = await response.json();
+          return data.reply;
+        }
+        return this.localPedagogicalEngine({ mode, subject, prompt });
+      }
+
+      localPedagogicalEngine({ mode, subject, prompt }) {
+        const clean = prompt.trim();
+        if (mode === "homework") {
+          if (subject === "Matemática") {
+            return `📐 Guía paso a paso en Matemática:
+
+1️⃣ Comprendemos el problema: "${clean}"
+2️⃣ Identificamos los datos conocidos y la incógnita que debemos despejar.
+3️⃣ Aplicamos operaciones inversas en ambos lados para mantener el equilibrio.
+💡 Ejemplo práctico: Si tienes 2x + 6 = 18, primero restas 6 (2x = 12) y luego divides entre 2 (x = 6).
+
+¿Te gustaría intentar resolver uno parecido para comprobarlo?`;
+          }
+          return `📘 Explicación guiada de ${subject}:
+
+• Idea central: Para entender "${clean}", primero dividámoslo en causa, proceso y resultado.
+• En palabras sencillas: Todo fenómeno o texto responde a un "¿por qué ocurre?" y a un "¿qué consecuencias tiene?".
+• Ejemplo aplicado: Relaciona este concepto con una situación cotidiana de tu entorno para recordarlo mejor.
+
+¿Qué parte específica quieres profundizar?`;
+        }
+        if (mode === "summary") {
+          const preview = clean.length > 90 ? clean.slice(0, 90) + "..." : clean;
+          return `📝 Resumen Estructurado CAST-IA:
+
+• Tema analizado: "${preview}"
+• Concepto clave: Identifica la definición principal y las palabras técnicas.
+• Punto de examen: Recuerda comparar sus características principales y dar un ejemplo concreto.
+• Consejo de memoria: Explícalo en voz alta en 30 segundos con tus propias palabras.`;
+        }
+        return `¡Excelente pregunta! Analicemos "${clean}" juntos:
+
+1. Primero, piensa en lo que ya sabes sobre este tema.
+2. La clave está en conectar la teoría con un ejemplo sencillo del día a día.
+3. Si quieres, dime en qué curso estás viendo esto y lo desglosamos paso a paso.`;
+      }
+    }
+
+    const aiService = new CastIAService();
+
+    const state = {
+      chat: JSON.parse(localStorage.getItem("castia_chat") || "null") || [
+        { sender: "ai", text: "¡Hola! Soy CAST-IA ✨ Estoy lista para ayudarte a estudiar. ¿Qué curso o tema repasamos hoy?" }
+      ],
+      tasks: JSON.parse(localStorage.getItem("castia_tasks") || "null") || [
+        { id: 1, title: "Resolver ejercicios de ecuaciones", course: "Matemática", date: "2026-11-20", done: true },
+        { id: 2, title: "Leer capítulo sobre la célula", course: "Ciencias", date: "2026-11-21", done: false }
+      ],
+      quizIndex: 0,
+      weakTopics: JSON.parse(localStorage.getItem("castia_weak") || '["Ecuaciones lineales", "Comprensión lectora"]')
+    };
+
+    const quizBank = [
+      {
+        q: "¿Qué ocurre cuando pasamos un número que está sumando al otro lado de una ecuación?",
+        options: ["Pasa restando", "Pasa multiplicando", "No cambia de signo"],
+        answer: 0,
+        explain: "¡Exacto! Para mantener la igualdad, aplicamos la operación inversa: lo que suma pasa restando."
+      },
+      {
+        q: "¿Cuál es el objetivo principal de hacer un resumen de estudio?",
+        options: ["Copiar todo el texto igual", "Extraer las ideas principales con tus palabras", "Memorizar sin entender"],
+        answer: 1,
+        explain: "¡Muy bien! Sintetizar con tus propias palabras demuestra que realmente comprendiste el tema."
+      }
+    ];
+
+    function saveState() {
+      localStorage.setItem("castia_chat", JSON.stringify(state.chat));
+      localStorage.setItem("castia_tasks", JSON.stringify(state.tasks));
+      localStorage.setItem("castia_weak", JSON.stringify(state.weakTopics));
+    }
+
+    function goScreen(id, btn) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+      const targetBtn = btn || document.querySelector(`.nav-btn[data-target="${id}"]`);
+      if (targetBtn) targetBtn.classList.add("active");
+      if (id === "scr-progreso") renderProgress();
+    }
+
+    function renderChat() {
+      const box = document.getElementById("chat-history");
+      box.innerHTML = state.chat.map(m => `
+        <div class="msg ${m.sender}">
+          <span class="msg-sender">${m.sender === "ai" ? "CAST-IA" : "Tú"}</span>
+          ${m.text}
+        </div>
+      `).join("");
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function sendChat() {
+      const input = document.getElementById("chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+      state.chat.push({ sender: "user", text });
+      input.value = "";
+      renderChat();
+
+      const reply = await aiService.askTutor({ mode: "chat", prompt: text });
+      state.chat.push({ sender: "ai", text: reply });
+      saveState();
+      renderChat();
+    }
+
+    async function solveHomework() {
+      const subject = document.getElementById("hw-subject").value;
+      const prompt = document.getElementById("hw-prompt").value.trim();
+      const out = document.getElementById("hw-output");
+      if (!prompt) return;
+      out.style.display = "block";
+      out.textContent = "CAST-IA está preparando tu explicación paso a paso...";
+      const res = await aiService.askTutor({ mode: "homework", subject, prompt });
+      out.textContent = res;
+    }
+
+    function switchStudyTab(tab, el) {
+      document.querySelectorAll(".pill-tab").forEach(t => t.classList.remove("active"));
+      el.classList.add("active");
+      document.getElementById("study-resumen").style.display = tab === "resumen" ? "block" : "none";
+      document.getElementById("study-quiz").style.display = tab === "quiz" ? "block" : "none";
+      if (tab === "quiz") renderQuiz();
+    }
+
+    async function generateSummary() {
+      const prompt = document.getElementById("summary-input").value.trim();
+      const out = document.getElementById("summary-output");
+      if (!prompt) return;
+      out.style.display = "block";
+      out.textContent = "Sintetizando ideas clave...";
+      out.textContent = await aiService.askTutor({ mode: "summary", prompt });
+    }
+
+    function renderQuiz() {
+      const item = quizBank[state.quizIndex % quizBank.length];
+      const container = document.getElementById("quiz-container");
+      container.innerHTML = `
+        <p style="font-weight:600; margin-bottom:10px;">${item.q}</p>
+        ${item.options.map((opt, idx) => `
+          <button onclick="checkQuiz(${idx})" style="display:block; width:100%; text-align:left; padding:10px; margin-bottom:8px; border-radius:10px; background:#140F17; color:#fff; border:1px solid rgba(229,185,76,0.3); cursor:pointer;">
+            ${opt}
+          </button>
+        `).join("")}
+        <div id="quiz-feedback" style="font-size:0.84rem; color:var(--gold-light); margin-top:6px;"></div>
+      `;
+    }
+
+    function checkQuiz(idx) {
+      const item = quizBank[state.quizIndex % quizBank.length];
+      const fb = document.getElementById("quiz-feedback");
+      if (idx === item.answer) {
+        fb.textContent = "✅ " + item.explain;
+      } else {
+        fb.textContent = "💡 Casi: recuerda analizar la relación inversa. Pista: " + item.explain;
+      }
+    }
+
+    function nextQuizQuestion() {
+      state.quizIndex++;
+      renderQuiz();
+    }
+
+    function renderTasks() {
+      const list = document.getElementById("task-list");
+      list.innerHTML = state.tasks.map(t => `
+        <div class="task-item ${t.done ? "done" : ""}">
+          <div onclick="toggleTask(${t.id})" style="cursor:pointer; flex:1;">
+            <span>${t.done ? "☑" : "⬜"} <strong>${t.title}</strong></span>
+            <div style="font-size:0.75rem; color:var(--pink-soft); margin-top:2px;">${t.course} • Entrega: ${t.date || "Sin fecha"}</div>
+          </div>
+          <button onclick="deleteTask(${t.id})" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem;">✕</button>
+        </div>
+      `).join("");
+    }
+
+    function addTask() {
+      const title = document.getElementById("task-title").value.trim();
+      const course = document.getElementById("task-course").value.trim() || "General";
+      const date = document.getElementById("task-date").value;
+      if (!title) return;
+      state.tasks.unshift({ id: Date.now(), title, course, date, done: false });
+      document.getElementById("task-title").value = "";
+      saveState();
+      renderTasks();
+    }
+
+    function toggleTask(id) {
+      const t = state.tasks.find(x => x.id === id);
+      if (t) t.done = !t.done;
+      saveState();
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      state.tasks = state.tasks.filter(x => x.id !== id);
+      saveState();
+      renderTasks();
+    }
+
+    function renderProgress() {
+      const total = state.tasks.length;
+      const done = state.tasks.filter(t => t.done).length;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("prog-percent").textContent = pct + "%";
+      document.getElementById("prog-bar").style.width = pct + "%";
+      document.getElementById("prog-stats").textContent = `Has completado ${done} de ${total} actividades registradas.`;
+      const pending = state.tasks.filter(t => !t.done).map(t => t.course);
+      document.getElementById("prog-advice").textContent = pending.length
+        ? `Te recomiendo dedicar 20 minutos hoy a reforzar: ${[...new Set(pending)].join(", ")}. ¡Vas por excelente camino!`
+        : "¡Increíble! Tienes todas tus actividades al día. Aprovecha la Zona de Estudio para practicar un cuestionario rápido.";
+    }
+
+    renderChat();
+    renderTasks();
+    renderProgress();
+  </script>
+</body>
+</html>
